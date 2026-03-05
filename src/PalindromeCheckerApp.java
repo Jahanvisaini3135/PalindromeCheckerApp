@@ -1,44 +1,51 @@
 import java.util.*;
 
-// Strategy Interface
-interface PalindromeStrategy {
-    boolean checkPalindrome(String input);
-}
+public class PalindromeCheckerApp {
 
-// Stack-based strategy
-class StackStrategy implements PalindromeStrategy {
+    // Method 1: Simple Two Pointer Method
+    public static boolean twoPointerCheck(String str) {
 
-    public boolean checkPalindrome(String input) {
+        int start = 0;
+        int end = str.length() - 1;
+
+        while (start < end) {
+            if (str.charAt(start) != str.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    // Method 2: Stack Method
+    public static boolean stackCheck(String str) {
 
         Stack<Character> stack = new Stack<>();
 
-        for (char ch : input.toCharArray()) {
-            stack.push(ch);
+        for (char c : str.toCharArray()) {
+            stack.push(c);
         }
 
-        for (char ch : input.toCharArray()) {
-            if (ch != stack.pop()) {
+        for (char c : str.toCharArray()) {
+            if (c != stack.pop()) {
                 return false;
             }
         }
 
         return true;
     }
-}
 
-// Deque-based strategy
-class DequeStrategy implements PalindromeStrategy {
-
-    public boolean checkPalindrome(String input) {
+    // Method 3: Deque Method
+    public static boolean dequeCheck(String str) {
 
         Deque<Character> deque = new ArrayDeque<>();
 
-        for (char ch : input.toCharArray()) {
-            deque.addLast(ch);
+        for (char c : str.toCharArray()) {
+            deque.addLast(c);
         }
 
         while (deque.size() > 1) {
-
             if (deque.removeFirst() != deque.removeLast()) {
                 return false;
             }
@@ -46,10 +53,6 @@ class DequeStrategy implements PalindromeStrategy {
 
         return true;
     }
-}
-
-// Main class
-public class UseCase12PalindromeCheckerApp {
 
     public static void main(String[] args) {
 
@@ -58,27 +61,30 @@ public class UseCase12PalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = sc.nextLine().toLowerCase();
 
-        System.out.println("Choose Strategy:");
-        System.out.println("1. Stack Strategy");
-        System.out.println("2. Deque Strategy");
+        // Two Pointer Performance
+        long start1 = System.nanoTime();
+        boolean result1 = twoPointerCheck(input);
+        long end1 = System.nanoTime();
 
-        int choice = sc.nextInt();
+        // Stack Performance
+        long start2 = System.nanoTime();
+        boolean result2 = stackCheck(input);
+        long end2 = System.nanoTime();
 
-        PalindromeStrategy strategy;
+        // Deque Performance
+        long start3 = System.nanoTime();
+        boolean result3 = dequeCheck(input);
+        long end3 = System.nanoTime();
 
-        if (choice == 1) {
-            strategy = new StackStrategy();
-        } else {
-            strategy = new DequeStrategy();
-        }
+        System.out.println("\nResults:");
+        System.out.println("Two Pointer Method: " + result1 +
+                " | Time: " + (end1 - start1) + " ns");
 
-        boolean result = strategy.checkPalindrome(input);
+        System.out.println("Stack Method: " + result2 +
+                " | Time: " + (end2 - start2) + " ns");
 
-        if (result) {
-            System.out.println("The string is a Palindrome.");
-        } else {
-            System.out.println("The string is NOT a Palindrome.");
-        }
+        System.out.println("Deque Method: " + result3 +
+                " | Time: " + (end3 - start3) + " ns");
 
         sc.close();
     }
